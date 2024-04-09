@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { Gares } from '../bll/gares';
+import { OpenapiPmrService } from '../bll/openapi-pmr.service';
 
 @Component({
   selector: 'app-input-control',
@@ -7,8 +9,16 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class InputControlComponent {
   @Output() inputChange = new EventEmitter<string>();
-
-  onInputChange(value: string): void {
-    this.inputChange.emit(value);
+  gares: Gares[] = [];
+  selectedGare!: string;
+  constructor(private openapiPmrService: OpenapiPmrService) { }
+  ngOnInit() {
+    this.openapiPmrService.getGares().subscribe((gares: Gares[]) => {
+      this.gares = gares;    
+    });
+  }
+  onInputChange(gare: string) {
+    this.selectedGare = gare;
+    this.inputChange.emit(gare);
   }
 }

@@ -1,10 +1,8 @@
 <div class="input-control">
-    <label for="item-input">Selectionner une gare</label>
-    <select id="item-input" #newItem class="input-control select">
-      <option value="">Choisissez une gare</option>
-      <option value="option1">Option 1</option>
-      <option value="option2">Option 2</option>
-      <option value="option3">Option 3</option>
-    </select>
-  </div>
-  <button type="button" (click)="onInputChange(newItem.value)">Valider</button>
+  <label for="item-input">Selectionner une gare</label>
+  <select id="item-input" #newItem class="input-control select">
+    <option value="">Choisissez une gare</option>
+    <option *ngFor="let gare of gares" [ngValue]="gare">{{ gare.name }}</option>
+  </select>
+</div>
+<button type="button" (click)="onInputChange(newItem.value)">Valider</button>
