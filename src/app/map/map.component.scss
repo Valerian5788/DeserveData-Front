@@ -1,0 +1,14 @@
+.map {
+    width: 100vw;
+    height: 100vh;
+  }
+  .map-container {
+    position: relative;
+  }
+  
+  app-input-control {
+    position: absolute;
+    top: 80px;  /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    z-index: 1000; /* Ensure the input control is above the map */
+  }
