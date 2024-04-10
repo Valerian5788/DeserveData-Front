@@ -8,7 +8,7 @@ import { OpenapiPmrService } from '../bll/openapi-pmr.service';
   styleUrl: './input-control.component.scss'
 })
 export class InputControlComponent {
-  @Output() inputChange = new EventEmitter<string>();
+  @Output() inputChange = new EventEmitter<{ value: string, radius: number }>();
   gares: Gares[] = [];
   selectedGare!: string;
   constructor(private openapiPmrService: OpenapiPmrService) { }
@@ -17,8 +17,8 @@ export class InputControlComponent {
       this.gares = gares;    
     });
   }
-  onInputChange(gare: string) {
-    this.selectedGare = gare;
-    this.inputChange.emit(gare);
+  onInputChange(value: string, radius: string) {
+    this.selectedGare = value;   
+    this.inputChange.emit({value, radius: Number(radius)});
   }
 }

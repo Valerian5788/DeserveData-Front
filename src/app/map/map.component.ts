@@ -16,85 +16,59 @@ export class MapComponent{
   map!: L.Map;
   ngOnInit() {
     this.openapiPmrService.getGares().subscribe((gares: Gares[]) => {
-      this.gares = gares;  
+      this.gares = gares;
+      this.addMarkersToMap();
     })
   }
+  
   onMapReady(map: L.Map) {
     this.map = map;
     L.Icon.Default.imagePath = 'assets/images/';
   }
-  onInputChange(value: string): void {
-    console.log('inputchange', value);
-    this.gare = this.gares.find(gares => gares.name === value)!; 
+  
+  addMarkersToMap() {
+    if (this.map && this.gares) {
+      this.gares.forEach(gare => {
+        const marker = L.marker([gare.latitude, gare.longitude]).addTo(this.map);
+        marker.bindPopup(`<b>${gare.name}</b><br>Latitude: ${gare.latitude}<br>Longitude: ${gare.longitude}`, {
+          offset: new Leaflet.Point(0, 0)
+        });
+      });
+    }
+  }
+  onInputChange(event: { value: string, radius: number }): void {
+    console.log('inputchange', event.value);
+    console.log('inputchange', event.radius);
+    
+    this.gare = this.gares.find(gares => gares.name === event.value)!; 
     console.log(this.gare.name, this.gare.longitude, this.gare.latitude);
+    
+    this.openapiPmrService.getBusStop(event.radius,this.gare.longitude, this.gare.latitude).subscribe(response => {
+      console.log(response);
+    });
   
     // Set the view of the map to the longitude and latitude of the gare and zoom in
     this.map.setView([this.gare.latitude, this.gare.longitude], 13);
-  
-    // Add a marker at the longitude and latitude of the gare
-    L.marker([this.gare.latitude, this.gare.longitude]).addTo(this.map);
   }
 
-  options: Leaflet.MapOptions = {
-    layers: getLayers(),
-    zoom: 12,
-    center: new Leaflet.LatLng(50.8466, 4.3528)
+  getLayers = (): Leaflet.Layer[] => {
+    return [
+      new Leaflet.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      } as Leaflet.TileLayerOptions)
+    ] as Leaflet.Layer[];
   };
-  
-  
+
+  options: Leaflet.MapOptions = {
+    layers: this.getLayers(),
+    zoom: 12,
+    center: new Leaflet.LatLng(50.8466, 4.3528),
+    maxBounds: new Leaflet.LatLngBounds(
+      new Leaflet.LatLng(49.49667452747045, 2.5419924999999995), // Southwest corner of Belgium
+      new Leaflet.LatLng(51.50514408717694, 6.403320312499999)  // Northeast corner of Belgium
+    ),
+    minZoom: 7  // Prevent the user from zooming out too far
+  };
 }
 
-export const getLayers = (): Leaflet.Layer[] => {
-  return [
-    new Leaflet.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    } as Leaflet.TileLayerOptions),
-    ...getMarkers(),
-    ...getRoutes()
-  ] as Leaflet.Layer[];
-};
-
-export const getMarkers = (): Leaflet.Marker[] => {
-  return [
-    new Leaflet.Marker(new Leaflet.LatLng(50.9, 4.3528), {
-      icon: new Leaflet.Icon({
-        iconSize: [50, 41],
-        iconAnchor: [25, 38],
-        iconUrl: 'assets/blue-marker.svg'
-      }),
-      title: 'Workspace'
-    } as Leaflet.MarkerOptions)
-    .bindPopup('This is the Workspace marker.', {
-      offset: new Leaflet.Point(0, -30) // Adjust this value as needed
-    })
-    .on('click', () => {
-      console.log('Workspace marker clicked');
-    }),
-    new Leaflet.Marker(new Leaflet.LatLng(50.86564, 4.3528), {
-      icon: new Leaflet.Icon({
-        iconSize: [50, 41],
-        iconAnchor: [25, 38],
-        iconUrl: 'assets/red-marker.svg',
-      }),
-      title: 'Riva'
-    } as Leaflet.MarkerOptions)
-    .bindPopup('This is the Riva marker.', {
-      offset: new Leaflet.Point(0, -30) // Adjust this value as needed
-    })
-    .on('click', () => {
-      console.log('Riva marker clicked');
-    }),
-  ] as Leaflet.Marker[];
-};
-
-export const getRoutes = (): Leaflet.Polyline[] => {
-  return [
-    new Leaflet.Polyline([
-      new Leaflet.LatLng(50.9, 4.3528),
-      new Leaflet.LatLng(50.86564, 4.3528),
-    ] as Leaflet.LatLng[], {
-      color: '#0d9148'
-    } as Leaflet.PolylineOptions)
-  ] as Leaflet.Polyline[];
-};
 

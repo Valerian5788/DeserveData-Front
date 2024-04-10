@@ -4,5 +4,8 @@
     <option value="">Choisissez une gare</option>
     <option *ngFor="let gare of gares" [ngValue]="gare">{{ gare.name }}</option>
   </select>
+  
+  <label for="radius-input">Selectionner un rayon</label>
+  <input id="radius-input" #newRadius type="number" min="1" class="input-control">
 </div>
-<button type="button" (click)="onInputChange(newItem.value)">Valider</button>
+<button type="button" (click)="onInputChange(newItem.value, newRadius.value)">Valider</button>
