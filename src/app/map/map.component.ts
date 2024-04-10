@@ -2,6 +2,7 @@ import { AfterViewInit, Component } from '@angular/core';
 import L, * as Leaflet from 'leaflet';
 import { OpenapiPmrService } from '../bll/openapi-pmr.service';
 import { Gares } from '../bll/gares';
+import { Facilities } from '../bll/facilities';
 
 @Component({
   selector: 'app-map',
@@ -14,11 +15,20 @@ export class MapComponent{
   gares!: Gares[];
   gare!: Gares;
   map!: L.Map;
+  facilitiesData!: Facilities[];
+  nbArret!: number;
+  radius!: number;
+  markers: { [key: string]: L.Marker } = {};
+
   ngOnInit() {
     this.openapiPmrService.getGares().subscribe((gares: Gares[]) => {
       this.gares = gares;
       this.addMarkersToMap();
     })
+    this.openapiPmrService.getFacilitiesData().subscribe((data: Facilities[]) => {
+      this.facilitiesData = data;
+      this.addMarkersToMap();
+    });
   }
   
   onMapReady(map: L.Map) {
@@ -27,26 +37,37 @@ export class MapComponent{
   }
   
   addMarkersToMap() {
-    if (this.map && this.gares) {
+    if (this.map && this.gares && this.facilitiesData) {
       this.gares.forEach(gare => {
         const marker = L.marker([gare.latitude, gare.longitude]).addTo(this.map);
-        marker.bindPopup(`<b>${gare.name}</b><br>Latitude: ${gare.latitude}<br>Longitude: ${gare.longitude}`, {
-          offset: new Leaflet.Point(0, 0)
-        });
+        this.markers[gare.name] = marker; // store the marker
+        const gareFacilities = this.facilitiesData.find(data => data.station == gare.name);
+        const facilitiesInfo = gareFacilities ? gareFacilities.facilities.map(facility => `<li>${facility.value}</li>`).join('') : 'No facilities data available';
+
+          marker.bindPopup(`<b>${gare.name}</b><br>Latitude: ${gare.latitude}<br>Longitude: ${gare.longitude}<br>Facilities:<ul>${facilitiesInfo}</ul>`, {
+            offset: new Leaflet.Point(0, 0)
+          }); 
       });
     }
   }
+  updatePopupContent(marker: L.Marker, gare: Gares, radius: number, nbArret: number) {
+    const gareFacilities = this.facilitiesData.find(data => data.station == gare.name);
+    const facilitiesInfo = gareFacilities ? gareFacilities.facilities.map(facility => `<li>${facility.value}</li>`).join('') : 'No facilities data available';
+    marker.bindPopup(`<b>${gare.name}</b><br>Latitude: ${gare.latitude}<br>Longitude: ${gare.longitude}<br>Nombre d'arrets de bus dans une zone de ${radius}km : ${nbArret}<br>Facilities:<ul>${facilitiesInfo}</ul>`);
+  }
+  
   onInputChange(event: { value: string, radius: number }): void {
-    console.log('inputchange', event.value);
-    console.log('inputchange', event.radius);
     
     this.gare = this.gares.find(gares => gares.name === event.value)!; 
-    console.log(this.gare.name, this.gare.longitude, this.gare.latitude);
     
     this.openapiPmrService.getBusStop(event.radius,this.gare.longitude, this.gare.latitude).subscribe(response => {
-      console.log(response);
+      this.nbArret = response['total des arrets dans la zone'];
+      this.radius = event.radius;
+      const marker = this.markers[this.gare.name];
+      // Assuming `marker` is the marker for the current gare
+      this.updatePopupContent(marker, this.gare, this.radius, this.nbArret);
     });
-  
+    
     // Set the view of the map to the longitude and latitude of the gare and zoom in
     this.map.setView([this.gare.latitude, this.gare.longitude], 13);
   }

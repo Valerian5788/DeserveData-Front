@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map, switchMap, tap } from 'rxjs';
 import { Gares } from './gares';
 import { BusStopResponse } from './bus-stop-reponse';
+import { Facilities } from './facilities';
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +36,8 @@ export class OpenapiPmrService {
       }),
       tap(cityName => console.log(cityName))
     );
-}
+  }
+  getFacilitiesData(): Observable<Facilities[]> {
+    return this._httpclient.get<Facilities[]>('https://pmr-pythonapi.onrender.com/jsonFacilities');
+  }
 }
