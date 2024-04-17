@@ -40,4 +40,8 @@ export class OpenapiPmrService {
   getFacilitiesData(): Observable<Facilities[]> {
     return this._httpclient.get<Facilities[]>('https://pmr-pythonapi.onrender.com/jsonFacilities');
   }
+
+  getHauteurQuai(station: string): Observable<any> {
+    return this._httpclient.get<any>('https://pmr-pythonapi.onrender.com/GetHauteurQuai/' + station);
+  }
 }
