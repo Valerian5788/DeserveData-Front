@@ -50,6 +50,8 @@ export class MapComponent{
       });
     }
   }
+
+  
   updatePopupContent(marker: L.Marker, gare: Gares, radius: number, nbArret: number) {
     const gareFacilities = this.facilitiesData.find(data => data.station == gare.name);
     const facilitiesInfo = gareFacilities ? gareFacilities.facilities.map(facility => `<li>${facility.value}</li>`).join('') : 'No facilities data available';
@@ -90,6 +92,17 @@ export class MapComponent{
     ),
     minZoom: 7  // Prevent the user from zooming out too far
   };
+  selectedOption: string = '';
+  onMenuChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.selectedOption = target.value;
+    if (this.selectedOption === 'showBusStop') {
+      console.log('showBusStop');
+      
+    }
+    // Add more conditions as needed for other options
+  }
+  
 }
 
 
