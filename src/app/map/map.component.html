@@ -4,6 +4,7 @@
             <select (change)="onMenuChange($event)">
                 <option value="">Choose an option</option>
                 <option value="showBusStop">Show bus stop</option>
+                <option value="showHauteurQuai">Show hauteur quai</option>
                 <!-- Add more options as needed -->
             </select>
         </div>
@@ -13,5 +14,6 @@
         [leafletOptions]="options"
         (leafletMapReady)="onMapReady($event)">
     </div>
+    <app-hauteur-quai *ngIf="selectedOption === 'showHauteurQuai'"></app-hauteur-quai>
     <app-input-control *ngIf="selectedOption === 'showBusStop'" (inputChange)="onInputChange($event)"></app-input-control>
 </div>

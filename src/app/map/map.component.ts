@@ -94,11 +94,17 @@ export class MapComponent{
   };
   selectedOption: string = '';
   onMenuChange(event: Event) {
+    
     const target = event.target as HTMLSelectElement;
     this.selectedOption = target.value;
     if (this.selectedOption === 'showBusStop') {
-      console.log('showBusStop');
-      
+      console.log('showBusStop');      
+    }
+    if (this.selectedOption === 'showHauteurQuai') {
+      console.log('showHauteurQuai');
+    }
+    if (this.selectedOption === '') {
+      console.log('rien');
     }
     // Add more conditions as needed for other options
   }
