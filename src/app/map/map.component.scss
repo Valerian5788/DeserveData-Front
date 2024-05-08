@@ -16,3 +16,10 @@
   .custom-control {
     margin-left: 50px; /* Adjust as needed */
 }
+
+app-hauteur-quai{
+    position: absolute;
+    top: 80px;  /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    z-index: 1000; /* Ensure the input control is above the map */
+}

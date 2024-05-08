@@ -14,6 +14,6 @@
         [leafletOptions]="options"
         (leafletMapReady)="onMapReady($event)">
     </div>
-    <app-hauteur-quai *ngIf="selectedOption === 'showHauteurQuai'"></app-hauteur-quai>
+    <app-hauteur-quai *ngIf="selectedOption === 'showHauteurQuai'" (stationChange)="onStationChange($event)"></app-hauteur-quai>
     <app-input-control *ngIf="selectedOption === 'showBusStop'" (inputChange)="onInputChange($event)"></app-input-control>
 </div>

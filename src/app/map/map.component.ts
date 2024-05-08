@@ -11,6 +11,7 @@ import { Facilities } from '../bll/facilities';
 })
 export class MapComponent{
   constructor(private openapiPmrService: OpenapiPmrService) { }
+  private circle?: L.Circle;
   title = 'AngularOSM';
   gares!: Gares[];
   gare!: Gares;
@@ -66,12 +67,32 @@ export class MapComponent{
       this.nbArret = response['total des arrets dans la zone'];
       this.radius = event.radius;
       const marker = this.markers[this.gare.name];
+      if (marker) {
+        marker.openPopup();
+    }
       // Assuming `marker` is the marker for the current gare
       this.updatePopupContent(marker, this.gare, this.radius, this.nbArret);
     });
     
     // Set the view of the map to the longitude and latitude of the gare and zoom in
-    this.map.setView([this.gare.latitude, this.gare.longitude], 13);
+    this.map.flyTo([this.gare.latitude, this.gare.longitude], 13);
+    // Remove the previous circle if it exists
+    if (this.circle) {
+      this.circle.remove();
+  }
+
+  // Create a new circle and add it to the map
+  this.circle = L.circle([this.gare.latitude, this.gare.longitude], {
+      radius: event.radius * 1000, // Convert radius from km to meters
+      color: 'blue', // Set the color of the circle
+      fillColor: '#30f', // Set the fill color of the circle
+      fillOpacity: 0.2, // Set the fill opacity of the circle
+  }).addTo(this.map);
+  }
+
+  onStationChange(station: string) {
+    this.gare = this.gares.find(gares => gares.name === station)!; 
+    this.map.flyTo([this.gare.latitude, this.gare.longitude], 13); // Adjust the zoom level as needed
   }
 
   getLayers = (): Leaflet.Layer[] => {

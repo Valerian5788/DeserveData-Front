@@ -4,19 +4,19 @@
       <option value="">Choisissez une gare</option>
       <option *ngFor="let gare of gares" [ngValue]="gare">{{ gare.name }}</option>
     </select>
-    <button type="button" (click)="onStationChange(newStation.value)">Valider</button>
   </div>
+  <button type="button" (click)="onStationChange(newStation.value)">Valider</button>
   <table *ngIf="quaiData">
     <thead>
       <tr>
-        <th>Station</th>
+        <th>Id du quai</th>
         <th>Hauteur Quai</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of quaiData">
-        <td>{{ data.station }}</td>
-        <td>{{ data.hauteurQuai }}</td>
+        <td>{{ data['id du quai'] }}</td>
+        <td>{{ data.hauteur }}</td>
       </tr>
     </tbody>
   </table>

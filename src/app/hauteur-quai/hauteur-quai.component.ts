@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { OpenapiPmrService } from '../bll/openapi-pmr.service';
 import { Gares } from '../bll/gares';
 
@@ -8,6 +8,8 @@ import { Gares } from '../bll/gares';
   styleUrls: ['./hauteur-quai.component.scss']
 })
 export class HauteurQuaiComponent implements OnInit {
+  
+  @Output() stationChange = new EventEmitter<string>();
   selectedStation!: string;
   quaiData: any;
   gares: Gares[] = [];
@@ -24,6 +26,10 @@ export class HauteurQuaiComponent implements OnInit {
     this.selectedStation = station;
     this._openapiservice.getHauteurQuai(station).subscribe(data => {
       this.quaiData = data['donnees quai : '];
+      console.log(this.quaiData);
+      
     });
+    this.stationChange.emit(station); // Emit the selected station
   }
+  
 }
