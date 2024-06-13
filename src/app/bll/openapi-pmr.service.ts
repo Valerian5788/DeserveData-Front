@@ -13,7 +13,7 @@ export class OpenapiPmrService {
   constructor(private _httpclient: HttpClient) { }
   gares!: string[];
   getGares(): Observable<Gares[]> {
-    return this._httpclient.get<Gares[]>('https://pmr-pythonapi.onrender.com/StationsName');
+    return this._httpclient.get<Gares[]>('https://pmr-pythonapi.onrender.com/StationsName/fr');
   }
 
   getBusStop(radius: number, lon: number, lat: number): Observable<BusStopResponse> {
