@@ -44,7 +44,7 @@ export class MapComponent{
         this.markers[gare.name] = marker; // store the marker
         const gareFacilities = this.facilitiesData.find(data => data.station == gare.name);
         const facilitiesInfo = gareFacilities ? gareFacilities.facilities.map(facility => `<li>${facility.value}</li>`).join('') : 'No facilities data available';
-
+          
           marker.bindPopup(`<b>${gare.name}</b><br>Latitude: ${gare.latitude}<br>Longitude: ${gare.longitude}<br>Facilities:<ul>${facilitiesInfo}</ul>`, {
             offset: new Leaflet.Point(0, 0)
           }); 

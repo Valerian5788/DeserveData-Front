@@ -44,4 +44,11 @@ export class OpenapiPmrService {
   getHauteurQuai(station: string): Observable<any> {
     return this._httpclient.get<any>('https://pmr-pythonapi.onrender.com/GetHauteurQuai/' + station);
   }
+
+  getCrowdManagementOfDayNamur(day: number): Observable<any> {
+    return this._httpclient.get<any>('https://pmr-pythonapi.onrender.com/NamurTri/' + day);
+  }
+  getCrowdManagementOfDayCharleroi(day: number): Observable<any> {
+    return this._httpclient.get<any>('https://pmr-pythonapi.onrender.com/CharleroiTri/' + day);
+  }
 }

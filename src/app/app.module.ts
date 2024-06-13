@@ -9,13 +9,16 @@ import { InputControlComponent } from './input-control/input-control.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HauteurQuaiComponent } from './hauteur-quai/hauteur-quai.component';
+import { CrowdComponent } from './crowd/crowd.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     MapComponent,
     InputControlComponent,
-    HauteurQuaiComponent
+    HauteurQuaiComponent,
+    CrowdComponent
   ],
   imports: [
     BrowserModule,

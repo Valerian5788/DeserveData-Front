@@ -1,0 +1,10 @@
+<table *ngIf="crowdManagementData | async as data">
+    <tr>
+      <th>Time</th>
+      <th>Total</th>
+    </tr>
+    <tr *ngFor="let item of data">
+      <td>{{ item.timestamp }}</td>
+      <td>{{ item.total }}</td>
+    </tr>
+  </table>
