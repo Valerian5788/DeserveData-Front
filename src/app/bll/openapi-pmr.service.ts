@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map, switchMap, tap } from 'rxjs';
+import { Observable, map, switchMap, tap, throwError, catchError } from 'rxjs';
 import { Gares } from './gares';
 import { BusStopResponse } from './bus-stop-reponse';
 import { Facilities } from './facilities';
@@ -13,7 +13,13 @@ export class OpenapiPmrService {
   constructor(private _httpclient: HttpClient) { }
   gares!: string[];
   getGares(): Observable<Gares[]> {
-    return this._httpclient.get<Gares[]>('https://pmr-pythonapi.onrender.com/StationsName/fr');
+    return this._httpclient.get<Gares[]>('https://pmr-pythonapi.onrender.com/StationsName/fr')
+      .pipe(
+        catchError(error => {
+          console.error('Error fetching gares:', error);
+          return throwError(() => new Error('Failed to fetch gares'));
+        })
+      );
   }
 
   getBusStop(radius: number, lon: number, lat: number): Observable<BusStopResponse> {
